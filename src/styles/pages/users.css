@@ -1,0 +1,81 @@
+/* 회원 상세 - 정보 카드 */
+.info-card {
+  background: var(--color-bg-white);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.info-row {
+  display: flex;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  width: 120px;
+  min-width: 120px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.info-value {
+  flex: 1;
+  color: var(--color-text);
+}
+
+.user-actions {
+  margin-top: var(--spacing-lg);
+}
+
+.user-status-notice {
+  margin-top: var(--spacing-md);
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* 포트폴리오 */
+.portfolio-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.summary-card {
+  background: var(--color-bg-white);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.summary-card h4 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: var(--font-size-sm);
+}
+
+.summary-row span:first-child {
+  color: var(--color-text-secondary);
+}
+
+/* 거래 내역 */
+.user-trades .search-form {
+  margin-bottom: var(--spacing-md);
+}
