@@ -1,7 +1,8 @@
 const BASE_URL = '';
 
-// accessToken은 메모리에만 보관 (XSS 방어)
+// accessToken과 refreshToken 모두 메모리에만 보관 (XSS 방어)
 let accessToken: string | null = null;
+let refreshToken: string | null = null;
 
 export function setAccessToken(token: string | null): void {
   accessToken = token;
@@ -11,11 +12,19 @@ export function getAccessToken(): string | null {
   return accessToken;
 }
 
+export function setRefreshToken(token: string | null): void {
+  refreshToken = token;
+}
+
+export function getRefreshToken(): string | null {
+  return refreshToken;
+}
+
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
 async function tryRefreshToken(): Promise<string | null> {
-  const storedRefresh = localStorage.getItem('refreshToken');
+  const storedRefresh = refreshToken;
   if (!storedRefresh) return null;
 
   try {
@@ -33,7 +42,7 @@ async function tryRefreshToken(): Promise<string | null> {
       setAccessToken(newToken);
       // refreshToken도 갱신 (서버가 새 refreshToken을 발급하는 경우)
       if (json.data?.refreshToken) {
-        localStorage.setItem('refreshToken', json.data.refreshToken);
+        setRefreshToken(json.data.refreshToken);
       }
       return newToken;
     }
@@ -45,7 +54,7 @@ async function tryRefreshToken(): Promise<string | null> {
 
 function clearAuthAndDispatch(): void {
   setAccessToken(null);
-  localStorage.removeItem('refreshToken');
+  setRefreshToken(null);
   window.dispatchEvent(new CustomEvent('auth-expired'));
 }
 
@@ -78,7 +87,7 @@ export async function request<T>(
     ) {
       window.dispatchEvent(new CustomEvent('duplicate-login'));
       setAccessToken(null);
-      localStorage.removeItem('refreshToken');
+      setRefreshToken(null);
       throw new Error('DUPLICATE_LOGIN');
     }
 

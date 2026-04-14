@@ -1,30 +1,30 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import * as authApi from '../api/auth';
-import { setAccessToken } from '../api/client';
+import { setAccessToken, getRefreshToken, setRefreshToken } from '../api/client';
 import type { AdminTokenResponse } from '@/types/auth';
 import { AuthContext } from './authContextDef';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const hasStoredRefresh = !!localStorage.getItem('refreshToken');
+  const hasStoredRefresh = !!getRefreshToken();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(hasStoredRefresh);
   const [showDuplicateLoginModal, setShowDuplicateLoginModal] = useState(false);
   const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const clearRefreshTimer = () => {
+  const clearRefreshTimer = useCallback(() => {
     if (refreshTimerRef.current) {
       clearTimeout(refreshTimerRef.current);
       refreshTimerRef.current = null;
     }
-  };
+  }, []);
 
   const clearAuth = useCallback(() => {
     setAccessToken(null);
-    localStorage.removeItem('refreshToken');
+    setRefreshToken(null);
     setIsAuthenticated(false);
     clearRefreshTimer();
-  }, []);
+  }, [clearRefreshTimer]);
 
   const handleLogout = useCallback(async () => {
     try {
@@ -39,22 +39,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const refreshTime = Math.max((expiresInSeconds - 300) * 1000, 10000);
     clearRefreshTimer();
     refreshTimerRef.current = setTimeout(async () => {
-      const storedRefresh = localStorage.getItem('refreshToken');
+      const storedRefresh = getRefreshToken();
       if (!storedRefresh) return;
       try {
         const res = await authApi.refreshToken(storedRefresh);
         setAccessToken(res.accessToken);
+        setRefreshToken(res.refreshToken);
         scheduleTokenRefresh(res.expiresIn);
       } catch {
         handleLogout();
       }
     }, refreshTime);
-  }, [handleLogout]);
+  }, [clearRefreshTimer, handleLogout]);
 
   const login = useCallback(async (email: string, password: string): Promise<AdminTokenResponse> => {
     const data = await authApi.login({ email, password });
     setAccessToken(data.accessToken);
-    localStorage.setItem('refreshToken', data.refreshToken);
+    setRefreshToken(data.refreshToken);
     setIsAuthenticated(true);
     scheduleTokenRefresh(data.expiresIn);
     return data;
@@ -90,11 +91,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // 페이지 로드 시: refreshToken이 있으면 accessToken 재발급
   useEffect(() => {
-    const storedRefresh = localStorage.getItem('refreshToken');
+    const storedRefresh = getRefreshToken();
     if (storedRefresh) {
       authApi.refreshToken(storedRefresh)
         .then((res) => {
           setAccessToken(res.accessToken);
+          setRefreshToken(res.refreshToken);
           setIsAuthenticated(true);
           scheduleTokenRefresh(res.expiresIn);
         })
@@ -106,8 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
     }
     return () => clearRefreshTimer();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [scheduleTokenRefresh, clearAuth, clearRefreshTimer]);
 
   return (
     <AuthContext.Provider
