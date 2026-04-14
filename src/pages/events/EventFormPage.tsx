@@ -58,6 +58,7 @@ export default function EventFormPage() {
     setDateError('');
     setIsLoading(true);
     try {
+      // datetime-local 값(로컬 KST)을 UTC ISO 문자열로 변환해 서버에 전달
       const payload = {
         title,
         content,

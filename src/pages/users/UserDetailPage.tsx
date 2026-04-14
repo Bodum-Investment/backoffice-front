@@ -44,15 +44,15 @@ export default function UserDetailPage() {
       .finally(() => setIsLoading(false));
   }, [userId, showToast]);
 
-  // 포트폴리오 탭
+  // 포트폴리오 탭 (이미 조회된 데이터가 있으면 재요청하지 않음)
   useEffect(() => {
-    if (activeTab !== 'portfolio' || !userId) return;
+    if (activeTab !== 'portfolio' || !userId || portfolio !== null) return;
     setPortfolioLoading(true);
     getUserPortfolio(Number(userId))
       .then(setPortfolio)
       .catch(() => showToast('error', '포트폴리오 조회에 실패했습니다'))
       .finally(() => setPortfolioLoading(false));
-  }, [activeTab, userId, showToast]);
+  }, [activeTab, userId, showToast, portfolio]);
 
   // 거래 내역 탭
   const fetchTrades = useCallback(async () => {
@@ -80,7 +80,7 @@ export default function UserDetailPage() {
   };
 
   const handleSuspend = async () => {
-    if (suspendReason.length < 1 || suspendReason.length > 1000) return;
+    if (suspendReason.trim().length < 1 || suspendReason.length > 1000) return;
     setIsSuspending(true);
     try {
       await suspendUser(Number(userId), suspendReason);

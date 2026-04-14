@@ -68,7 +68,12 @@ export const TRADE_SOURCE_LABEL: Record<TradeSource, string> = {
   BOT: '자동',
 };
 
-/** ISO 8601 -> datetime-local 입력값 ("2026-04-08T09:00") */
+/**
+ * ISO 8601 (UTC) -> datetime-local 입력값 ("2026-04-08T09:00")
+ * 서버는 UTC 기준으로 ISO 문자열을 반환하며, datetime-local은 브라우저 로컬 타임존(KST) 기준이다.
+ * new Date(isoStr)는 UTC를 로컬 타임존으로 자동 변환하므로 KST 환경에서 정확하게 표시된다.
+ * 저장 시 new Date(localStr).toISOString()으로 다시 UTC로 변환해 서버에 전달한다.
+ */
 export function toDatetimeLocalValue(isoStr: string): string {
   const d = new Date(isoStr);
   const yyyy = d.getFullYear();

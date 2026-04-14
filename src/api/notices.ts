@@ -1,6 +1,7 @@
 import { get, post, put, del } from './client';
 import type { PageResponse } from '@/types/common';
 import type { NoticeResponse, NoticeCreateRequest, NoticeUpdateRequest } from '@/types/notice';
+import { toQueryString } from '@/utils/queryString';
 
 interface GetNoticesParams {
   page?: number;
@@ -9,7 +10,7 @@ interface GetNoticesParams {
 
 export const getNotices = (params: GetNoticesParams = {}): Promise<PageResponse<NoticeResponse>> =>
   get<PageResponse<NoticeResponse>>(
-    `/api/admin/notices?page=${params.page ?? 0}&size=${params.size ?? 20}`,
+    `/api/admin/notices${toQueryString({ page: params.page ?? 0, size: params.size ?? 20 })}`,
   );
 
 export const getNotice = (noticeId: number): Promise<NoticeResponse> =>

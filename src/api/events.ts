@@ -1,17 +1,12 @@
 import { get, post, put, del } from './client';
 import type { PageResponse } from '@/types/common';
 import type { EventResponse, EventCreateRequest, EventUpdateRequest } from '@/types/event';
+import { toQueryString } from '@/utils/queryString';
 
 interface GetEventsParams {
   status?: string;
   page?: number;
   size?: number;
-}
-
-function toQueryString(params: Record<string, string | number | undefined>): string {
-  const entries = Object.entries(params).filter(([, v]) => v !== undefined && v !== '');
-  if (entries.length === 0) return '';
-  return '?' + entries.map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`).join('&');
 }
 
 export const getEvents = (params: GetEventsParams = {}): Promise<PageResponse<EventResponse>> =>

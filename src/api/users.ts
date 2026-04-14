@@ -6,6 +6,7 @@ import type {
   UserPortfolioResponse,
   UserTradeHistoryResponse,
 } from '@/types/user';
+import { toQueryString } from '@/utils/queryString';
 
 interface GetUsersParams {
   email?: string;
@@ -20,12 +21,6 @@ interface GetUserTradesParams {
   tradeSource?: string;
   page?: number;
   size?: number;
-}
-
-function toQueryString(params: Record<string, string | number | undefined>): string {
-  const entries = Object.entries(params).filter(([, v]) => v !== undefined && v !== '');
-  if (entries.length === 0) return '';
-  return '?' + entries.map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`).join('&');
 }
 
 export const getUsers = (params: GetUsersParams = {}): Promise<PageResponse<UserListResponse>> =>
