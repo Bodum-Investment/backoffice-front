@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router';
 import { useAuth } from '@/hooks/useAuth';
 import AdminLayout from '@/components/layout/AdminLayout';
 import DuplicateLoginModal from '@/components/common/DuplicateLoginModal';
+import VersionUpdateBanner from '@/components/common/VersionUpdateBanner';
 import Toast from '@/components/common/Toast';
 import PrivateRoute from '@/routes/PrivateRoute';
 import LoginPage from '@/pages/LoginPage';
@@ -19,6 +20,7 @@ export default function App() {
 
   return (
     <>
+      <VersionUpdateBanner />
       <DuplicateLoginModal show={showDuplicateLoginModal} onClose={closeDuplicateLoginModal} />
       <Toast />
       <Routes>
