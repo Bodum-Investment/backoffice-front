@@ -36,9 +36,9 @@ export default function FormModal({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onCancel}>
+    <div className="modal-overlay" onClick={onCancel} role="dialog" aria-modal="true" aria-labelledby="form-modal-title">
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h3 className="modal-title">{title}</h3>
+        <h3 className="modal-title" id="form-modal-title">{title}</h3>
         <div className="modal-body">{children}</div>
         <div className="modal-actions">
           <button className="btn btn--secondary" onClick={onCancel} disabled={isLoading}>

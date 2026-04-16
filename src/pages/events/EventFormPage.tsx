@@ -124,7 +124,9 @@ export default function EventFormPage() {
             onChange={(e) => setContent(e.target.value)}
             placeholder="이벤트 내용"
             rows={8}
+            maxLength={5000}
           />
+          <span className="char-count">{content.length}/5000</span>
         </div>
 
         <div className="form-row">

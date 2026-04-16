@@ -4,6 +4,12 @@ import { useNavigate, Navigate } from 'react-router';
 import { useAuth } from '@/hooks/useAuth';
 import '@/styles/pages/login.css';
 
+const ERROR_MESSAGES: Record<string, string> = {
+  INVALID_CREDENTIALS: '이메일 또는 비밀번호가 올바르지 않습니다',
+  ACCOUNT_SUSPENDED: '정지된 계정입니다',
+  ACCOUNT_DELETED: '삭제된 계정입니다',
+};
+
 export default function LoginPage() {
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
@@ -13,12 +19,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   if (isAuthenticated) return <Navigate to="/" replace />;
-
-  const ERROR_MESSAGES: Record<string, string> = {
-    INVALID_CREDENTIALS: '이메일 또는 비밀번호가 올바르지 않습니다',
-    ACCOUNT_SUSPENDED: '정지된 계정입니다',
-    ACCOUNT_DELETED: '삭제된 계정입니다',
-  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

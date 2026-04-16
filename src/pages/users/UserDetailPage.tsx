@@ -251,8 +251,8 @@ export default function UserDetailPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {portfolio.portfolio.holdings.map((h, idx) => (
-                        <tr key={idx} style={{ cursor: 'default' }}>
+                      {portfolio.portfolio.holdings.map((h) => (
+                        <tr key={`${h.assetType}-${h.assetCode}`} style={{ cursor: 'default' }}>
                           <td>{ASSET_TYPE_LABEL[h.assetType]}</td>
                           <td>{h.assetCode}</td>
                           <td>{h.assetName}</td>
